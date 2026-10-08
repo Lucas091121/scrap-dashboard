@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrap Recovery Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <!-- HEADER DELL -->
+    <header class="dell-header">
+        <div class="header-left">
+            <span class="dell-logo">DELL</span>
+            <div class="header-divider"></div>
+            <div class="header-title">
+                <span class="header-main">Scrap Recovery</span>
+                <span class="header-sub">Recovery Intelligence</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <span>Scrap Recovery Dashboard</span>
+        </div>
+    </header>
+
+    <!-- NAV TABS -->
+    <nav class="nav-tabs">
+        <a href="#" class="nav-tab active">Overview</a>
+        <a href="#" class="nav-tab">By Platform</a>
+        <a href="#" class="nav-tab">Detailed Records</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="dashboard-content">
+
+        <!-- PAGE TITLE -->
+        <div class="page-header">
+            <div class="page-title-section">
+                <div class="page-icon">&#9679;</div>
+                <h1 class="page-title">Scrap Recovery Overview</h1>
+            </div>
+            <div class="page-meta">
+                <span class="meta-company">Dell Technologies</span>
+                <span class="meta-date">Auto-loaded: 10/02/2026 • 14:51:32</span>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="quarterFilter">Quarter</label>
+                <select id="quarterFilter">
+                    <option value="all">All</option>
+                    <option value="Q1">Qtr 1</option>
+                    <option value="Q2">Qtr 2</option>
+                    <option value="Q3">Qtr 3</option>
+                    <option value="Q4">Qtr 4</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="platformFilter">Platform</label>
+                <select id="platformFilter">
+                    <option value="all">All</option>
+                    <option value="WARLOCK">WARLOCK N 15 MLK2 INTEL</option>
+                    <option value="WLAN">WLAN</option>
+                    <option value="STSVR">STSVR</option>
+                    <option value="BATERIA">BATERIA</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <span class="kpi-label">Recovery Value ($)</span>
+                <span class="kpi-sublabel">Total SCRAP Cost Recovered</span>
+                <span class="kpi-value" id="kpiRecoveryValue">$1,063.04</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Recovered Parts</span>
+                <span class="kpi-sublabel">Total Quantity Found</span>
+                <span class="kpi-value" id="kpiRecoveredParts">2,958</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Unique Materials</span>
+                <span class="kpi-sublabel">Distinct Part Numbers</span>
+                <span class="kpi-value" id="kpiUniqueMaterials">279</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Average Value Per Part</span>
+                <span class="kpi-sublabel">Avg SCRAP Cost per Unit</span>
+                <span class="kpi-value" id="kpiAvgValue">$0.36</span>
+            </div>
+        </div>
+
+        <!-- CHARTS ROW 1 -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h3 class="chart-title">Most Recovered Items (Qty)</h3>
+                <p class="chart-subtitle">Total Quantity Found by Item</p>
+                <canvas id="chartMostRecovered"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Highest Value Recovered Items ($)</h3>
+                <p class="chart-subtitle">SCRAP Cost ($) by Item</p>
+                <canvas id="chartHighestValue"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Recovered Qty by Platform</h3>
+                <p class="chart-subtitle">Total Quantity Found by Platform</p>
+                <canvas id="chartQtyPlatform"></canvas>
+            </div>
+        </div>
+
+        <!-- CHARTS ROW 2 -->
+        <div class="charts-row two-cols">
+            <div class="chart-card">
+                <h3 class="chart-title">Recovered Value by Platform</h3>
+                <p class="chart-subtitle">SCRAP Cost ($) by Platform</p>
+                <canvas id="chartValuePlatform"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Recovery Trend</h3>
+                <p class="chart-subtitle">SCRAP Cost ($) by Month</p>
+                <canvas id="chartTrend"></canvas>
+            </div>
+        </div>
+
+        <!-- DETAILED TABLE -->
+        <div class="table-card">
+            <h3 class="chart-title">Detailed Records</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Quarter</th>
+                        <th>Month</th>
+                        <th>Day</th>
+                        <th>Platform</th>
+                        <th>PPID</th>
+                        <th>Item</th>
+                        <th>Item Name</th>
+                        <th>Qty Found</th>
+                        <th>SCRAP Cost ($)</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td>2026</td>
+                        <td>Qtr 1</td>
+                        <td>March</td>
+                        <td>13</td>
+                        <td>AC ADPT</td>
+                        <td>BR06TRW5LOB0059U4683</td>
+                        <td>6TRW5</td>
+                        <td>ADPT,AC,LTON,65,4.5,RGV2,BCC</td>
+                        <td>1</td>
+                        <td>$5.00</td>
+                    </tr>
+                    <tr>
+                        <td>2026</td>
+                        <td>Qtr 1</td>
+                        <td>March</td>
+                        <td>13</td>
+                        <td>BENSOLO N/V</td>
+                        <td>-</td>
+                        <td>JY64N</td>
+                        <td>BRKT,NGFF,ANT,CON,HOLD,7350</td>
+                        <td>2</td>
+                        <td>$0.13</td>
+                    </tr>
+                    <tr>
+                        <td>2026</td>
+                        <td>Qtr 1</td>
+                        <td>March</td>
+                        <td>13</td>
+                        <td>DOVER MFF</td>
+                        <td>CN0PVY9THKH0059716F6</td>
+                        <td>PVY9T</td>
+                        <td>BRKT,SSD,2230 EXT,D14 MFF,RC</td>
+                        <td>1</td>
+                        <td>$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>2026</td>
+                        <td>Qtr 1</td>
+                        <td>March</td>
+                        <td>13</td>
+                        <td>JADE 14</td>
+                        <td>CN038G5F2GC0057F0340</td>
+                        <td>38G5F</td>
+                        <td>CBL,DC-IN,PC1X250</td>
+                        <td>1</td>
+                        <td>$0.55</td>
+                    </tr>
+                    <tr>
+                        <td>2026</td>
+                        <td>Qtr 1</td>
+                        <td>March</td>
+                        <td>13</td>
+                        <td>LBL RETAIL</td>
+                        <td>BR0N5Y5XC5L005CAAZ9U</td>
+                        <td>N5Y5X</td>
+                        <td>LBL,REG,COO,U,8852,6N3530RPL,B</td>
+                        <td>1</td>
+                        <td>$0.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="8"><strong>Total</strong></td>
+                        <td><strong>2,958</strong></td>
+                        <td><strong>$1,063.04</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="dell-footer">
+        <span>© 2026 Dell Technologies. Scrap Recovery Dashboard.</span>
+    </footer>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
